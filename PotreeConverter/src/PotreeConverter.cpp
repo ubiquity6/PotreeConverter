@@ -1,6 +1,6 @@
 
 
-#include <experimental/filesystem>
+#include <boost/filesystem.hpp>
 
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
@@ -45,7 +45,7 @@ using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 using std::fstream;
 
-namespace fs = std::experimental::filesystem;
+namespace fs = boost::filesystem;
 
 namespace Potree{
 
@@ -419,13 +419,13 @@ void PotreeConverter::convert(){
 			Point p = reader->getPoint();
 			writer->add(p);
 
-			if((pointsProcessed % (1'000'000)) == 0){
+			if((pointsProcessed % (1000000)) == 0){
 				writer->processStore();
 				writer->waitUntilProcessed();
 
 				auto end = high_resolution_clock::now();
 				long long duration = duration_cast<milliseconds>(end-start).count();
-				float seconds = duration / 1'000.0f;
+				float seconds = duration / 1000.0f;
 
 				stringstream ssMessage;
 
@@ -437,7 +437,7 @@ void PotreeConverter::convert(){
 
 				cout << ssMessage.str() << endl;
 			}
-			if((pointsProcessed % (10'000'000)) == 0){
+			if((pointsProcessed % (10000000)) == 0){
 				cout << "FLUSHING: ";
 			
 				auto start = high_resolution_clock::now();
@@ -446,12 +446,12 @@ void PotreeConverter::convert(){
 			
 				auto end = high_resolution_clock::now();
 				long long duration = duration_cast<milliseconds>(end-start).count();
-				float seconds = duration / 1'000.0f;
+				float seconds = duration / 1000.0f;
 			
 				cout << seconds << "s" << endl;
 			}
 
-			//if(pointsProcessed >= 10'000'000){
+			//if(pointsProcessed >= 10000000){
 			//	break;
 			//}
 		}

@@ -172,7 +172,7 @@ bool copyDir(fs::path source, fs::path destination){
                 }
             }else{
                 // Found file: Copy
-				fs::copy_file(current, destination / current.filename(), fs::copy_options::overwrite_existing);
+				fs::copy_file(current, destination / current.filename(), fs::copy_option::overwrite_if_exists);
             }
         }catch(fs::filesystem_error const & e){
             std:: cerr << e.what() << '\n';

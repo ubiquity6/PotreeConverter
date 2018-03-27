@@ -11,9 +11,9 @@
 #include "PotreeException.h"
 
 #include "arguments.hpp"
-#include <experimental/filesystem>
+#include <boost/filesystem.hpp>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = boost::filesystem;
 
 using std::string;
 using std::cout;

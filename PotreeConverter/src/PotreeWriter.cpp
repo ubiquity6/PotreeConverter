@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iomanip>
 
-#include <experimental/filesystem>
+#include <boost/filesystem.hpp>
 
 #include "AABB.h"
 #include "SparseGrid.h"
@@ -31,7 +31,7 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 
-namespace fs = std::experimental::filesystem;
+namespace fs = boost::filesystem;
 
 namespace Potree{
 
@@ -478,9 +478,9 @@ PotreeWriter::PotreeWriter(string workDir, AABB aabb, float spacing, int maxDept
 	this->pointAttributes = pointAttributes;
 
 	if(this->scale == 0){
-		if(aabb.size.length() > 1'000'000){
+		if(aabb.size.length() > 1000000){
 			this->scale = 0.01;
-		}else if(aabb.size.length() > 100'000){
+		}else if(aabb.size.length() > 100000){
 			this->scale = 0.001;
 		}else if(aabb.size.length() > 1){
 			this->scale = 0.001;
@@ -530,7 +530,7 @@ void PotreeWriter::add(Point &p){
 	store.push_back(p);
 	numAdded++;
 
-	if(store.size() > 10'000){
+	if(store.size() > 10000){
 		processStore();
 	}
 }
@@ -689,7 +689,7 @@ void PotreeWriter::loadStateFromDisk(){
 
 			}
 		}
-		std::sort(hrcPaths.begin(), hrcPaths.end(), [](string &a, string &b){
+		std::sort(hrcPaths.begin(), hrcPaths.end(), [](const string &a, const string &b){
 			return a.size() < b.size();
 		});
 
