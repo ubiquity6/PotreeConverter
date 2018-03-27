@@ -6,7 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include <regex>
+#include <boost/regex.hpp>
 
 #include "Point.h"
 #include "PointReader.h"
@@ -109,20 +109,20 @@ public:
 		aabb = NULL;
 		this->file = file;
 
-		std::regex rEndHeader("^end_header.*");
-		std::regex rFormat("^format (ascii|binary_little_endian).*");
-		std::regex rElement("^element (\\w*) (\\d*)");
-		std::regex rProperty("^property (char|int8|uchar|uint8|short|int16|ushort|uint16|int|int32|uint|uint32|float|float32|double|float64) (\\w*)");
+		boost::regex rEndHeader("^end_header.*");
+		boost::regex rFormat("^format (ascii|binary_little_endian).*");
+		boost::regex rElement("^element (\\w*) (\\d*)");
+		boost::regex rProperty("^property (char|int8|uchar|uint8|short|int16|ushort|uint16|int|int32|uint|uint32|float|float32|double|float64) (\\w*)");
 		
 		string line;
 		while(std::getline(stream, line)){
 			line = trim(line);
 
-			std::cmatch sm;
-			if(std::regex_match(line, rEndHeader)){
+			boost::cmatch sm;
+			if(boost::regex_match(line, rEndHeader)){
 				// stop line parsing when end_header is encountered
 				break;
-			}else if(std::regex_match(line.c_str(), sm, rFormat)){
+			}else if(boost::regex_match(line.c_str(), sm, rFormat)){
 				// parse format
 				string f = sm[1];
 				if(f == "ascii"){
@@ -130,7 +130,7 @@ public:
 				}else if(f == "binary_little_endian"){
 					format = PLY_FILE_FORMAT_BINARY_LITTLE_ENDIAN;
 				}
-			}else if(std::regex_match(line.c_str(), sm, rElement)){
+			}else if(boost::regex_match(line.c_str(), sm, rElement)){
 				// parse vertex element declaration
 				string name = sm[1];
 				long count = atol(string(sm[2]).c_str());
@@ -144,7 +144,7 @@ public:
 					std::streamoff len = stream.tellg();
 					getline(stream, line);
 					line = trim(line);
-					if(std::regex_match(line.c_str(), sm, rProperty)){
+					if(boost::regex_match(line.c_str(), sm, rProperty)){
 						string name = sm[2];
 						PlyPropertyType type = plyPropertyTypes[sm[1]];
 						PlyProperty property(name, type);

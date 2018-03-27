@@ -35,9 +35,7 @@ SOURCE_GROUP("lib\\arguments" FILES ${lib_argument_files})
 
 add_executable(PotreeConverter ${files} ${lib_rapidjson_files} ${lib_argument_files})
 
-target_link_libraries(PotreeConverter ${LASZIP_LIBRARY} boost_filesystem)
-
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS system filesystem regex REQUIRED)
 
 if(UNIX)
     # re: -DBOOST_NO_CX11_SCOPED_ENUMS, see https://stackoverflow.com/questions/35007134/c-boost-undefined-reference-to-boostfilesystemdetailcopy-file
@@ -46,6 +44,7 @@ if(UNIX)
       ${LASZIP_LIBRARY}
       ${Boost_FILESYSTEM_LIBRARY}
       ${Boost_SYSTEM_LIBRARY}
+      ${Boost_REGEX_LIBRARY}
       )
 endif()
 
