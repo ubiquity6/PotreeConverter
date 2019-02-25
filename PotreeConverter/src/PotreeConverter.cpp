@@ -1,6 +1,6 @@
 
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #else
 #include <experimental/filesystem>
@@ -49,7 +49,7 @@ using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 using std::fstream;
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;

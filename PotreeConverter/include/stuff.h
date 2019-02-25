@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #else
 #include <experimental/filesystem>
@@ -40,7 +40,7 @@ using std::vector;
 using std::binary_function;
 using std::map;
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;

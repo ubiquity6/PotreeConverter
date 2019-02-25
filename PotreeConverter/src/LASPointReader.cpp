@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #else
 #include <experimental/filesystem>
@@ -15,7 +15,7 @@
 #include "stuff.h"
 
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;

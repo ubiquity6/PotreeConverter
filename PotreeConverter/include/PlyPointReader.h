@@ -6,7 +6,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/regex.hpp>
 #else
 #include <regex>
@@ -37,7 +37,7 @@ struct PlyPropertyType{
 	:name(name)
 	,size(size)
 	{
-	
+
 	}
 };
 
@@ -65,8 +65,8 @@ struct PlyElement{
 	}
 };
 
-unordered_map<string, PlyPropertyType> plyPropertyTypes = { 
-	{ "char", PlyPropertyType("char", 1) }, 
+unordered_map<string, PlyPropertyType> plyPropertyTypes = {
+	{ "char", PlyPropertyType("char", 1) },
 	{ "int8", PlyPropertyType("char", 1) },
 	{ "uchar", PlyPropertyType("uchar", 1) },
 	{ "uint8", PlyPropertyType("uchar", 1) },
@@ -113,7 +113,7 @@ public:
 		aabb = NULL;
 		this->file = file;
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 		boost::regex rEndHeader("^end_header.*");
 		boost::regex rFormat("^format (ascii|binary_little_endian).*");
 		boost::regex rElement("^element (\\w*) (\\d*)");
@@ -124,12 +124,12 @@ public:
 		std::regex rElement("^element (\\w*) (\\d*)");
 		std::regex rProperty("^property (char|int8|uchar|uint8|short|int16|ushort|uint16|int|int32|uint|uint32|float|float32|double|float64) (\\w*)");
 #endif
-		
+
 		string line;
 		while(std::getline(stream, line)){
 			line = trim(line);
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 			boost::cmatch sm;
 			if(boost::regex_match(line, rEndHeader)){
 #else
@@ -138,7 +138,7 @@ public:
 #endif
 				// stop line parsing when end_header is encountered
 				break;
-#ifdef __APPLE__
+#ifdef USE_BOOST
 			}else if(boost::regex_match(line.c_str(), sm, rFormat)){
 #else
 			}else if(std::regex_match(line.c_str(), sm, rFormat)){
@@ -150,7 +150,7 @@ public:
 				}else if(f == "binary_little_endian"){
 					format = PLY_FILE_FORMAT_BINARY_LITTLE_ENDIAN;
 				}
-#ifdef __APPLE__
+#ifdef USE_BOOST
 			}else if(boost::regex_match(line.c_str(), sm, rElement)){
 #else
 			}else if(std::regex_match(line.c_str(), sm, rElement)){
@@ -168,7 +168,7 @@ public:
 					std::streamoff len = stream.tellg();
 					getline(stream, line);
 					line = trim(line);
-#ifdef __APPLE__
+#ifdef USE_BOOST
 					if(boost::regex_match(line.c_str(), sm, rProperty)){
 #else
 					if(std::regex_match(line.c_str(), sm, rProperty)){
@@ -192,7 +192,7 @@ public:
 		if(pointsRead == pointCount){
 			return false;
 		}
-		
+
 		double x = 0;
 		double y = 0;
 		double z = 0;
@@ -274,11 +274,11 @@ public:
 				}else if(prop.name == "nz" && prop.type.name == plyPropertyTypes["float"].name){
 					memcpy(&nz, (buffer+offset), prop.type.size);
 				}
-				
+
 
 				offset += prop.type.size;
 			}
-			
+
 		}
 
 		point = Point(x,y,z,r,g,b);

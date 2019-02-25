@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #else
 #include <experimental/filesystem>
@@ -12,7 +12,7 @@
 #include "BINPointReader.hpp"
 #include "stuff.h"
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;
@@ -31,7 +31,7 @@ BINPointReader::BINPointReader(string path,  AABB aabb, double scale, PointAttri
 	this->aabb = aabb;
 	this->scale = scale;
 	this->attributes = pointAttributes;
-	
+
 	if(fs::is_directory(path)){
 		// if directory is specified, find all las and laz files inside directory
 
@@ -92,7 +92,7 @@ bool BINPointReader::readNextPoint(){
             delete [] buffer;
 			return false;
 		}
-		
+
 		int offset = 0;
 		for(int i = 0; i < attributes.size(); i++){
 			const PointAttribute attribute = attributes[i];
@@ -191,7 +191,7 @@ bool BINPointReader::readNextPoint(){
 
 			offset += attribute.byteSize;
 		}
-		
+
 		delete [] buffer;
 	}
 
@@ -210,9 +210,3 @@ AABB BINPointReader::getAABB(){
 }
 
 }
-
-
-
-
-
-

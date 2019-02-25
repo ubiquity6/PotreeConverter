@@ -3,7 +3,7 @@
 #ifndef POINTREADER_H
 #define POINTREADER_H
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 #include <boost/filesystem.hpp>
 #else
 #include <experimental/filesystem>
@@ -12,7 +12,7 @@
 #include "Point.h"
 #include "AABB.h"
 
-#ifdef __APPLE__
+#ifdef USE_BOOST
 namespace fs = boost::filesystem;
 #else
 namespace fs = std::experimental::filesystem;
