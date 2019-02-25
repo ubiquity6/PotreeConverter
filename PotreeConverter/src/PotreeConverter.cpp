@@ -93,8 +93,8 @@ void PotreeConverter::prepare(){
 				fs::path pDirectoryEntry = it->path();
 				if(fs::is_regular_file(pDirectoryEntry)){
 					string filepath = pDirectoryEntry.string();
-					if(iEndsWith(filepath, ".las") 
-						|| iEndsWith(filepath, ".laz") 
+					if(iEndsWith(filepath, ".las")
+						|| iEndsWith(filepath, ".laz")
 						|| iEndsWith(filepath, ".xyz")
 						|| iEndsWith(filepath, ".pts")
 						|| iEndsWith(filepath, ".ptx")
@@ -116,9 +116,17 @@ void PotreeConverter::prepare(){
 			pointAttributes.add(PointAttribute::COLOR_PACKED);
 		}else if(attribute == "INTENSITY"){
 			pointAttributes.add(PointAttribute::INTENSITY);
-		}else if(attribute == "CLASSIFICATION"){
+		} else if (attribute == "CLASSIFICATION") {
 			pointAttributes.add(PointAttribute::CLASSIFICATION);
-		}else if(attribute == "NORMAL"){
+		} else if (attribute == "RETURN_NUMBER") {
+			pointAttributes.add(PointAttribute::RETURN_NUMBER);
+		} else if (attribute == "NUMBER_OF_RETURNS") {
+			pointAttributes.add(PointAttribute::NUMBER_OF_RETURNS);
+		} else if (attribute == "SOURCE_ID") {
+			pointAttributes.add(PointAttribute::SOURCE_ID);
+		} else if (attribute == "GPS_TIME") {
+			pointAttributes.add(PointAttribute::GPS_TIME);
+		} else if(attribute == "NORMAL"){
 			pointAttributes.add(PointAttribute::NORMAL_OCT16);
 		}
 	}
@@ -134,7 +142,7 @@ AABB PotreeConverter::calculateAABB(){
 		for(string source : sources){
 
 			PointReader *reader = createPointReader(source, pointAttributes);
-			
+
 			AABB lAABB = reader->getAABB();
 			aabb.update(lAABB.min);
 			aabb.update(lAABB.max);
@@ -196,7 +204,7 @@ void PotreeConverter::generatePage(string name){
 				}else{
 					out << "\t\t" << "viewer.setBackground(\"gradient\"); // [\"skybox\", \"gradient\", \"black\", \"white\"];\n";
 				}
-				
+
 				string descriptionEscaped = string(description);
 				std::replace(descriptionEscaped.begin(), descriptionEscaped.end(), '`', '\'');
 
@@ -204,7 +212,7 @@ void PotreeConverter::generatePage(string name){
 			}else{
 				out << line << endl;
 			}
-			
+
 		}
 
 		in.close();
@@ -212,7 +220,7 @@ void PotreeConverter::generatePage(string name){
 	}
 
 	// change lasmap template
-	if(!this->projection.empty()){ 
+	if(!this->projection.empty()){
 		ifstream in( mapTemplateSourcePath );
 		ofstream out( mapTemplateTargetPath );
 
@@ -223,7 +231,7 @@ void PotreeConverter::generatePage(string name){
 			}else{
 				out << line << endl;
 			}
-			
+
 		}
 
 		in.close();
@@ -279,8 +287,8 @@ void writeSources(string path, vector<string> sourceFilenames, vector<int> numPo
 		Value jBounds(rapidjson::kObjectType);
 
 		{
-			Value bbMin(rapidjson::kObjectType);	
-			Value bbMax(rapidjson::kObjectType);	
+			Value bbMin(rapidjson::kObjectType);
+			Value bbMax(rapidjson::kObjectType);
 
 			bbMin.SetArray();
 			bbMin.PushBack(boundingBox.min.x, d.GetAllocator());
@@ -305,8 +313,8 @@ void writeSources(string path, vector<string> sourceFilenames, vector<int> numPo
 
 	Value jBoundingBox(rapidjson::kObjectType);
 	{
-		Value bbMin(rapidjson::kObjectType);	
-		Value bbMax(rapidjson::kObjectType);	
+		Value bbMin(rapidjson::kObjectType);
+		Value bbMax(rapidjson::kObjectType);
 
 		bbMin.SetArray();
 		bbMin.PushBack(bb.min.x, d.GetAllocator());
@@ -330,7 +338,7 @@ void writeSources(string path, vector<string> sourceFilenames, vector<int> numPo
 	//PrettyWriter<StringBuffer> writer(buffer);
 	Writer<StringBuffer> writer(buffer);
 	d.Accept(writer);
-	
+
 	if(!fs::exists(fs::path(path))){
 		fs::path pcdir(path);
 		fs::create_directories(pcdir);
@@ -392,6 +400,8 @@ void PotreeConverter::convert(){
 		return;
 	}
 
+	writer->storeSize = storeSize;
+
 	vector<AABB> boundingBoxes;
 	vector<int> numPoints;
 	vector<string> sourceFilenames;
@@ -437,17 +447,17 @@ void PotreeConverter::convert(){
 
 				cout << ssMessage.str() << endl;
 			}
-			if((pointsProcessed % (10000000)) == 0){
+			if((pointsProcessed % (flushLimit)) == 0){
 				cout << "FLUSHING: ";
-			
+
 				auto start = high_resolution_clock::now();
-			
+
 				writer->flush();
-			
+
 				auto end = high_resolution_clock::now();
 				long long duration = duration_cast<milliseconds>(end-start).count();
 				float seconds = duration / 1000.0f;
-			
+
 				cout << seconds << "s" << endl;
 			}
 
@@ -458,9 +468,9 @@ void PotreeConverter::convert(){
 		reader->close();
 		delete reader;
 
-		
+
 	}
-	
+
 	cout << "closing writer" << endl;
 	writer->flush();
 	writer->close();
@@ -473,7 +483,7 @@ void PotreeConverter::convert(){
 	auto end = high_resolution_clock::now();
 	long long duration = duration_cast<milliseconds>(end-start).count();
 
-	
+
 	cout << endl;
 	cout << "conversion finished" << endl;
 	cout << pointsProcessed << " points were processed and " << writer->numAccepted << " points ( " << percent << "% ) were written to the output. " << endl;
