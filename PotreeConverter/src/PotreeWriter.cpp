@@ -7,7 +7,11 @@
 #include <fstream>
 #include <iomanip>
 
+#ifdef __APPLE__
 #include <boost/filesystem.hpp>
+#else
+#include <experimental/filesystem>
+#endif
 
 #include "AABB.h"
 #include "SparseGrid.h"
@@ -31,7 +35,11 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 
+#ifdef __APPLE__
 namespace fs = boost::filesystem;
+#else
+namespace fs = std::experimental::filesystem;
+#endif
 
 namespace Potree{
 

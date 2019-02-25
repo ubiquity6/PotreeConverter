@@ -3,12 +3,20 @@
 #include <iostream>
 #include <vector>
 
+#ifdef __APPLE__
 #include <boost/filesystem.hpp>
+#else
+#include <experimental/filesystem>
+#endif
 
 #include "BINPointReader.hpp"
 #include "stuff.h"
 
+#ifdef __APPLE__
 namespace fs = boost::filesystem;
+#else
+namespace fs = std::experimental::filesystem;
+#endif
 
 using std::ifstream;
 using std::cout;

@@ -1,6 +1,10 @@
 
 
+#ifdef __APPLE__
 #include <boost/filesystem.hpp>
+#else
+#include <experimental/filesystem>
+#endif
 
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
@@ -45,7 +49,11 @@ using std::chrono::milliseconds;
 using std::chrono::duration_cast;
 using std::fstream;
 
+#ifdef __APPLE__
 namespace fs = boost::filesystem;
+#else
+namespace fs = std::experimental::filesystem;
+#endif
 
 namespace Potree{
 

@@ -14,7 +14,11 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef __APPLE__
 #include <boost/filesystem.hpp>
+#else
+#include <experimental/filesystem>
+#endif
 
 #include "Vector3.h"
 #include "AABB.h"
@@ -36,7 +40,11 @@ using std::vector;
 using std::binary_function;
 using std::map;
 
+#ifdef __APPLE__
 namespace fs = boost::filesystem;
+#else
+namespace fs = std::experimental::filesystem;
+#endif
 
 namespace Potree {
 

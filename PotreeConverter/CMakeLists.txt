@@ -38,17 +38,20 @@ SOURCE_GROUP("lib\\arguments" FILES ${lib_argument_files})
 
 add_executable(PotreeConverter ${files} ${lib_rapidjson_files} ${lib_argument_files})
 
-find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+target_link_libraries(PotreeConverter ${LASZIP_LIBRARY})
 
-if(UNIX)
+if(APPLE)
+    find_package(Boost COMPONENTS system filesystem regex REQUIRED)
     # re: -DBOOST_NO_CX11_SCOPED_ENUMS, see https://stackoverflow.com/questions/35007134/c-boost-undefined-reference-to-boostfilesystemdetailcopy-file
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++1y -pthread -lstdc++ -lm -DBOOST_NO_CXX11_SCOPED_ENUMS")
     target_link_libraries(PotreeConverter
-      ${LASZIP_LIBRARY}
       ${Boost_FILESYSTEM_LIBRARY}
       ${Boost_SYSTEM_LIBRARY}
       ${Boost_REGEX_LIBRARY}
       )
+elseif(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -pthread -lstdc++ -lm")
+    target_link_libraries(PotreeConverter -lstdc++fs)
 endif()
 
 install(TARGETS PotreeConverter RUNTIME DESTINATION bin/ )

@@ -11,9 +11,17 @@
 #include "PotreeException.h"
 
 #include "arguments.hpp"
+#ifdef __APPLE__
 #include <boost/filesystem.hpp>
+#else
+#include <experimental/filesystem>
+#endif
 
+#ifdef __APPLE__
 namespace fs = boost::filesystem;
+#else
+namespace fs = std::experimental::filesystem;
+#endif
 
 using std::string;
 using std::cout;
