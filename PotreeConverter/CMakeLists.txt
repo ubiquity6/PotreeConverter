@@ -10,9 +10,6 @@ file(GLOB_RECURSE lib_argument_files ${ARGUMENTS_INCLUDE_DIR}/* )
 include_directories(include ${LASZIP_INCLUDE_DIRS})
 include_directories(include ${RAPIDJSON_INCLUDE_DIR})
 include_directories(include ${ARGUMENTS_INCLUDE_DIR})
-# If we install Boost through Homebrew, it will go here.
-include_directories(/usr/local/include)
-link_directories(/usr/local/lib)
 
 SOURCE_GROUP("Header Files\\io" FILES
 	include/BINPointReader.hpp
@@ -43,13 +40,11 @@ target_link_libraries(PotreeConverter ${LASZIP_LIBRARY})
 if(APPLE)
     ADD_DEFINITIONS(-DUSE_BOOST)
     find_package(Boost COMPONENTS system filesystem regex REQUIRED)
+    include_directories(${Boost_INCLUDE_DIR})
+
     # re: -DBOOST_NO_CX11_SCOPED_ENUMS, see https://stackoverflow.com/questions/35007134/c-boost-undefined-reference-to-boostfilesystemdetailcopy-file
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++1y -pthread -lstdc++ -lm -DBOOST_NO_CXX11_SCOPED_ENUMS")
-    target_link_libraries(PotreeConverter
-      ${Boost_FILESYSTEM_LIBRARY}
-      ${Boost_SYSTEM_LIBRARY}
-      ${Boost_REGEX_LIBRARY}
-      )
+    target_link_libraries(PotreeConverter ${Boost_LIBRARIES})
 elseif(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++14 -pthread -lstdc++ -lm")
     target_link_libraries(PotreeConverter -lstdc++fs)
